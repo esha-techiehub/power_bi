@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Power BI for Data Analysts — Syllabus App</title>
+  <style>
+    :root{
+      --bg:#0b0c10; --panel:#111318; --muted:#8a8f98; --text:#e8eaed; --brand:#f2c811; --brand-2:#3ea6ff; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --card:#151922; --border:#222734;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#0b0c10, #0e1117 40%, #0b0c10);color:var(--text);font:500 15px/1.6 Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji"}
+    a{color:var(--brand-2);text-decoration:none}
+    .app{display:grid;grid-template-columns:300px 1fr;grid-template-rows:auto 1fr;min-height:100vh}
+    header{grid-column:1/3;display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--border);backdrop-filter:saturate(140%) blur(6px);position:sticky;top:0;background:rgba(11,12,16,.6);z-index:10}
+    .logo{display:flex;align-items:center;gap:10px}
+    .badge{font-weight:700;letter-spacing:.4px;padding:2px 8px;border-radius:999px;background:rgba(242,200,17,.1);border:1px solid rgba(242,200,17,.35);color:var(--brand)}
+    .title{font-size:18px}
+    .grow{flex:1}
+    .toolbar{display:flex;align-items:center;gap:8px}
+    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:linear-gradient(180deg,#171b24,#121620);color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer;transition:.2s ease;box-shadow:0 0 0 1px rgba(255,255,255,.02) inset}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.06) inset}
+    .btn.secondary{background:#0f1219}
+    .btn.brand{background:linear-gradient(180deg,#f2c811,#e8b90b);color:#080808;border-color:#000}
+    .layout{display:grid;grid-template-columns:300px 1fr;grid-auto-rows:1fr}
+    aside{border-right:1px solid var(--border);background:linear-gradient(180deg,#0e1218,#0b0f16);padding:16px 12px;overflow:auto}
+    .search{position:relative;margin:4px 8px 12px}
+    .search input{width:100%;padding:10px 12px 10px 36px;border-radius:12px;border:1px solid var(--border);background:#0e1320;color:var(--text)}
+    .search .icon{position:absolute;left:12px;top:10px;opacity:.6}
+    .nav{display:flex;flex-direction:column;gap:6px}
+    .nav button{all:unset;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;cursor:pointer;border:1px solid transparent}
+    .nav button:hover{background:rgba(255,255,255,.04);border-color:var(--border)}
+    .nav button.active{background:linear-gradient(180deg,#151a23,#10151f);border-color:var(--border)}
+    .mod-num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:#0f1522;border:1px solid var(--border);font-weight:700;color:var(--brand)}
+    main{padding:18px 22px;overflow:auto}
+    .card{background:linear-gradient(180deg,#111621,#0f1420);border:1px solid var(--border);border-radius:18px;padding:18px 18px 8px;margin:0 0 16px;box-shadow:0 2px 30px rgba(0,0,0,.25)}
+    .card h2{margin:0 0 8px;font-size:20px}
+    .muted{color:var(--muted)}
+    details.module{border:1px solid var(--border);border-radius:14px;padding:10px 12px;background:linear-gradient(180deg,#0f1420,#0c111a);margin:10px 0 14px}
+    details>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px}
+    details>summary::-webkit-details-marker{display:none}
+    .chip{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;background:#0f1522;border:1px solid var(--border);font-size:12px;color:var(--muted)}
+    ul.clean{margin:10px 0 14px 0;padding-left:20px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .kpis{display:flex;gap:8px;flex-wrap:wrap}
+    .kpi{background:#0f1522;border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+    .footer{display:flex;justify-content:space-between;align-items:center;padding:10px 0 24px;color:var(--muted)}
+    .small{font-size:12px}
+    .hidden{display:none}
+
+    /* Print-friendly */
+    @media print{
+      header, aside, .toolbar{display:none !important}
+      .app{grid-template-columns:1fr}
+      main{padding:0}
+      body{background:#fff;color:#000}
+      .card, details.module{break-inside:avoid}
+    }
+
+    /* Responsive */
+    @media (max-width: 940px){
+      .app, .layout{grid-template-columns:1fr}
+      aside{position:sticky;top:58px;z-index:9}
+      .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">
+        <span class="badge">POWER BI</span>
+        <div class="title">Data Analyst Syllabus — Interactive Notes</div>
+      </div>
+      <div class="grow"></div>
+      <div class="toolbar">
+        <button class="btn secondary" id="btnCollapse">Collapse All</button>
+        <button class="btn secondary" id="btnExpand">Expand All</button>
+        <button class="btn" id="btnExport">Export JSON</button>
+        <button class="btn brand" id="btnPrint">Print / PDF</button>
+      </div>
+    </header>
+
+    <aside>
+      <div class="search">
+        <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="q" placeholder="Search modules, topics, keywords…" />
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="small muted" style="margin:10px 12px 0">Tip: Use search to filter modules and topics. Click a module on the left to jump.</div>
+    </aside>
+
+    <main id="content">
+      <!-- Dynamic content will render here -->
+    </main>
+  </div>
+
+  <script>
+  // ------------------------------
+  // Data Model: Syllabus (12 Modules)
+  // ------------------------------
+  const syllabus = [
+    {
+      id:1,
+      title:"Introduction to Power BI & Data Analytics",
+      objective:"Understand the foundations of Data Analytics, BI, and the Power BI ecosystem.",
+      sections:[
+        {h:"What is Data Analytics?", t:[
+          "Systematic process to collect, clean, transform, and interpret data for decision-making.",
+          "Turns raw data → information → business actions.",
+          "Purposes: data-driven decisions, trend prediction, KPI tracking, cost optimization.",
+          "Data pipeline stages: Ingest → Store → Prepare → Analyze → Present → Act."
+        ]},
+        {h:"Types of Analytics", list:[
+          ["Descriptive","Explains what happened (e.g., monthly sales report)."],
+          ["Diagnostic","Explains why it happened (e.g., stock-out caused drop)."],
+          ["Predictive","Forecasts what might happen (e.g., next quarter sales)."],
+          ["Prescriptive","Suggests what to do (e.g., increase inventory, run promo)."]
+        ]},
+        {h:"What is Business Intelligence (BI)?", t:[
+          "Technologies and methods to analyze business data and present actionable information.",
+          "Dashboards, paginated reports, KPI scorecards, self-service analytics."
+        ]},
+        {h:"Power BI Overview", t:[
+          "Microsoft platform for data connection, transformation, modeling, visualization, and sharing.",
+          "Ecosystem: Desktop, Service, Mobile, Gateway, Report Builder, Dataflows.",
+          "Flow: Data Sources → Power Query (ETL) → Model (DAX) → Reports → Dashboards → Service."
+        ]},
+        {h:"Role of a Data Analyst (Power BI)", list:[
+          ["Data Collection","Excel, SQL, APIs, cloud sources."],
+          ["Cleaning","Power Query transformations and profiling."],
+          ["Modeling","Relationships, star schema, DAX measures."],
+          ["Visualization","Interactive dashboards, storytelling."],
+          ["Insights","Trends, anomalies, KPI monitoring."],
+          ["Collaboration","Publish, share, set RLS in Service."]
+        ]},
+        {h:"Install & Workspace", t:[
+          "Install Power BI Desktop (64-bit). Sign in and explore Report/Data/Model views.",
+          "Key panes: Fields, Visualizations; Ribbon: Home, Insert, Modeling, View."
+        ]}
+      ],
+      tags:["foundation","bi","intro"]
+    },
+    // -------------------- MODULE 2 --------------------
+    {
+      id:2,
+      title:"Data Extraction & Transformation (Power Query)",
+      objective:"Connect, clean, merge, and shape data from diverse sources using Power Query & M.",
+      sections:[
+        {h:"Connectors & Ingestion", t:[
+          "Built‑in connectors: Excel/CSV/JSON/XML, SQL Server, MySQL, PostgreSQL, SharePoint, Web, OData, Azure (Blob/Data Lake/SQL).",
+          "Authentication: Windows/Organizational/Database/Anonymous; credential privacy levels.",
+          "Query folding basics: push transforms back to the source for performance."
+        ]},
+        {h:"Data Cleaning Essentials", t:[
+          "Remove duplicates, nulls, and errors; trim/clean; change data types with locale awareness.",
+          "Split/merge columns (by delimiter/positions), extract text, parse dates and numbers.",
+          "Fill down/up, replace values, detect data types, standardize categorical values."
+        ]},
+        {h:"Transformations & Shaping", t:[
+          "Group By (aggregations), Pivot/Unpivot for denormalization/normalization.",
+          "Merge Queries (joins: Left/Right/Inner/Full/Anti) vs Append (stacking tables).",
+          "Parameterize sources, manage query dependencies (Query Dependencies view)."
+        ]},
+        {h:"Advanced M Techniques", t:[
+          "Custom columns with M, functions (let…in), invoke custom functions across tables.",
+          "Conditional logic (if…then…else), List/Record/Table functions, buffering.",
+          "Incremental refresh setup: RangeStart/RangeEnd parameters and filters."
+        ]},
+        {h:"Data Quality & Profiling", t:[
+          "Enable Column quality/distribution/profile; handle outliers and anomalies.",
+          "Sampling vs full scan; verify joins; reconcile row counts; trust but verify with totals."
+        ]},
+        {h:"Practical Lab", t:[
+          "Connect Sales (CSV) + Products (Excel) + Regions (SQL).",
+          "Clean, standardize, and merge to produce a single fact table for modeling."
+        ]}
+      ],
+      tags:["etl","power query","m"]
+    },
+    // -------------------- MODULE 3 --------------------
+    {
+      id:3,
+      title:"Data Modeling",
+      objective:"Design analytical models that are performant, intuitive, and business‑ready.",
+      sections:[
+        {h:"Schema Design", t:[
+          "Prefer Star Schema: Fact (transactions) at lowest grain + Dimension tables (Date, Product, Customer, Region).",
+          "Snowflake cautiously for shared dimensions; avoid wide flat tables for large models."
+        ]},
+        {h:"Relationships & Cardinality", t:[
+          "One‑to‑many as default; single‑direction filters for predictable behavior.",
+          "Inactive relationships with USERELATIONSHIP; handle many‑to‑many with bridge tables when needed."
+        ]},
+        {h:"Modeling Techniques", t:[
+          "Calculated columns vs Measures: push to measures when possible to save memory.",
+          "Hierarchies (Geo/Date/Product) for drill‑down; role‑playing Date using multiple relationships."
+        ]},
+        {h:"Performance & Storage", t:[
+          "VertiPaq compression basics; reduce column cardinality; hide technical columns.",
+          "Import vs DirectQuery vs Composite models; Aggregations for big data."
+        ]},
+        {h:"Practical Lab", t:[
+          "Build star schema for Sales with Date, Product, Customer, Region dims; validate relationships; create basic measures."
+        ]}
+      ],
+      tags:["model","schema","relationships"]
+    },
+    // -------------------- MODULE 4 --------------------
+    {
+      id:4,
+      title:"DAX (Data Analysis Expressions)",
+      objective:"Create calculations and KPIs using DAX functions, evaluation contexts, and patterns.",
+      sections:[
+        {h:"Core Concepts", t:[
+          "Row context vs Filter context; context transition via CALCULATE and iterators (SUMX, AVERAGEX).",
+          "Evaluation order and dependency chains; handling BLANK()."
+        ]},
+        {h:"Essential Functions", t:[
+          "Math/Agg: SUM, AVERAGE, COUNTROWS, DISTINCTCOUNT, DIVIDE.",
+          "Logical: IF, SWITCH, COALESCE; Text: CONCATENATEX; Filter: FILTER, ALL/ALLEXCEPT, VALUES."
+        ]},
+        {h:"Time Intelligence", t:[
+          "DATEADD, DATESYTD/MTD/QTD, SAMEPERIODLASTYEAR, TOTALYTD; custom fiscal calendars.",
+          "Handling missing dates with a Date table (continuous range)."
+        ]},
+        {h:"Reusable Patterns", t:[
+          "Percent of Total, Running/Moving averages, YoY/YoY%, Dynamic titles, KPI flags.",
+          "Segmentation (banding), Top‑N with Others bucket, What‑If parameters."
+        ]},
+        {h:"Practical Lab", t:[
+          "Create measures: Total Sales, Total Margin, Margin %, YoY Sales, % of Category."
+        ]}
+      ],
+      tags:["dax","measures"]
+    },
+    // -------------------- MODULE 5 --------------------
+    {
+      id:5,
+      title:"Visualization & Storytelling",
+      objective:"Design clear, accessible, and insightful dashboards that drive decisions.",
+      sections:[
+        {h:"Chart Selection", t:[
+          "Bars/Columns for comparison; Lines for trends; Scatter for correlation; Maps for geo; Waterfall for contribution; Funnel for stages; KPIs/Cards for highlights."
+        ]},
+        {h:"Interactivity & UX", t:[
+          "Slicers (sync across pages), drill‑down/up, drill‑through pages; bookmarks + buttons for guided narratives.",
+          "Report page/tooltips, custom tooltips; navigation bars; responsive layout grids."
+        ]},
+        {h:"Design System", t:[
+          "Themes, typography scale, spacing system, consistent color semantics; avoid misleading 3D or dual axes.",
+          "Accessibility: contrast, alt text, keyboard navigation, meaningful color legends."
+        ]},
+        {h:"Advanced Visuals", t:[
+          "Decomposition Tree for root‑cause, Key Influencers for driver analysis, custom visuals from Marketplace (govern with care)."
+        ]},
+        {h:"Practical Lab", t:[
+          "Build a one‑page Sales Executive dashboard with KPIs, Top‑N, trendlines, and drill‑through to Region/Product pages."
+        ]}
+      ],
+      tags:["ux","story","design"]
+    },
+    // -------------------- MODULE 6 --------------------
+    {
+      id:6,
+      title:"Power BI Service (Online)",
+      objective:"Publish, share, refresh, and collaborate securely in the cloud.",
+      sections:[
+        {h:"Artifacts & Workspaces", t:[
+          "Datasets, dataflows, reports, dashboards, apps; workspace roles (Admin/Member/Contributor/Viewer).",
+          "Apps for packaged delivery with audiences; endorsements (Promoted/Certified)."
+        ]},
+        {h:"Refresh & Gateways", t:[
+          "Scheduled refresh, on‑premises data gateway (personal vs enterprise), credentials management.",
+          "Incremental refresh policies; refresh failure investigation with logs."
+        ]},
+        {h:"Collaboration & Distribution", t:[
+          "Share links, row‑level security enforcement in Service, subscriptions, export to PDF/PPT, usage metrics.",
+          "Comments/annotations, mobile layout, embed in Teams/SharePoint."
+        ]},
+        {h:"Practical Lab", t:[
+          "Publish Sales model, create dashboard tiles, configure refresh, and share to a pilot audience."
+        ]}
+      ],
+      tags:["service","collab","refresh"]
+    },
+    // -------------------- MODULE 7 --------------------
+    {
+      id:7,
+      title:"Security & Governance",
+      objective:"Protect data with least‑privilege access and organizational governance.",
+      sections:[
+        {h:"RLS/OLS/CLS", t:[
+          "Row‑level security roles (static vs dynamic) with USERPRINCIPALNAME and bridge tables.",
+          "Object‑level (hide tables/measures) and Column‑level sensitivity handling."
+        ]},
+        {h:"Compliance & Admin", t:[
+          "Tenant settings, information protection labels (Purview), audit logs, data lineage view.",
+          "Deployment standards, naming conventions, dataset ownership, certified datasets."
+        ]},
+        {h:"Practical Lab", t:[
+          "Implement dynamic RLS by Region for the Sales dashboard; validate with Test as role."
+        ]}
+      ],
+      tags:["security","rls","governance"]
+    },
+    // -------------------- MODULE 8 --------------------
+    {
+      id:8,
+      title:"Integration & Advanced Analytics",
+      objective:"Extend insights using Excel, Python/R, AI visuals, and Azure analytics services.",
+      sections:[
+        {h:"Office & Teams Integration", t:[
+          "Analyze in Excel (Pivot over dataset), SharePoint web‑part, Teams tabs and notifications."
+        ]},
+        {h:"Python/R & AI", t:[
+          "Enable scripting visuals; data security considerations; dependency management.",
+          "AI visuals (Key Influencers, Decomposition Tree), Quick Insights, Auto ML (when Fabric available)."
+        ]},
+        {h:"Azure Synapse & Fabric Concepts", t:[
+          "SQL endpoints, lakehouses/OneLake, Direct Lake concept for large models, dataflows gen2.",
+          "When to use Import vs DirectQuery vs Direct Lake; governance impacts."
+        ]},
+        {h:"Practical Lab", t:[
+          "Use Key Influencers to detect drivers of high margin; export insights to PPT for leadership."
+        ]}
+      ],
+      tags:["advanced","ai","integration"]
+    },
+    // -------------------- MODULE 9 --------------------
+    {
+      id:9,
+      title:"Gateway & Real‑Time Dashboards",
+      objective:"Bridge on‑prem data and stream live business signals into dashboards.",
+      sections:[
+        {h:"Gateway Architecture", t:[
+          "Personal vs Enterprise gateways, clustering for high availability, network prerequisites, service account best practices."
+        ]},
+        {h:"Streaming & Push Datasets", t:[
+          "Streaming tiles vs Push datasets; REST API basics to push rows; latency vs history trade‑offs.",
+          "Use Power Automate to trigger dataset updates from business events."
+        ]},
+        {h:"Practical Lab", t:[
+          "Create a Push dataset for IoT telemetry (temp, humidity) and build a real‑time dashboard with alerts."
+        ]}
+      ],
+      tags:["gateway","realtime"]
+    },
+    // -------------------- MODULE 10 --------------------
+    {
+      id:10,
+      title:"Deployment & Administration",
+      objective:"Operate Power BI at scale with reliable releases and cost‑efficient models.",
+      sections:[
+        {h:"Pipelines & ALM", t:[
+          "Dev/Test/Prod workspaces; deployment pipelines; parameterization; dataset rules; change notes.",
+          "Versioning PBIX; external tools (Tabular Editor, ALM Toolkit) for model diff and CI/CD."
+        ]},
+        {h:"Dataflows & Lineage", t:[
+          "Reusable ETL with dataflows; incremental refresh in dataflows; monitor lineage and impact analysis."
+        ]},
+        {h:"Performance & Cost Management", t:[
+          "Model size optimization (reduce cardinality, remove unused columns), aggregations, composite models.",
+          "Licensing overview (Pro/Premium/PPU) and capacity planning basics."
+        ]},
+        {h:"Practical Lab", t:[
+          "Create a deployment pipeline for Sales app; document promotion criteria and rollback plan."
+        ]}
+      ],
+      tags:["ops","pipelines","admin"]
+    },
+    // -------------------- MODULE 11 --------------------
+    {
+      id:11,
+      title:"Case Studies & Projects",
+      objective:"Apply concepts end‑to‑end to solve business problems with measurable outcomes.",
+      sections:[
+        {h:"Project Menu", list:[
+          ["Sales Performance","KPIs, cohorts, region drill‑down, product mix, YoY trends."],
+          ["HR Analytics","Attrition drivers, headcount trend, hiring funnel, diversity metrics."],
+          ["Finance","Budget vs actuals, variance, contribution analysis, cashflow snapshots."],
+          ["Marketing","Campaign ROI, CAC/LTV, funnel conversion, audience segmentation."],
+          ["IoT (Advanced)","Streaming telemetry, threshold alerts, downtime analysis."]
+        ]},
+        {h:"Execution Checklist", t:[
+          "Business requirement doc (metrics, users, frequency).",
+          "Data mapping, data quality plan, star schema design, DAX list, mockups/wireframes.",
+          "UAT plan, performance checklist, release notes, adoption metrics."
+        ]}
+      ],
+      tags:["projects","practice"]
+    },
+    // -------------------- MODULE 12 --------------------
+    {
+      id:12,
+      title:"Interview & Certification Readiness",
+      objective:"Prepare for analyst interviews and the Microsoft PL‑300 certification.",
+      sections:[
+        {h:"Interview Prep", t:[
+          "Top topics: Star schema vs snowflake, DAX contexts, RLS patterns, incremental refresh, DirectQuery vs Import.",
+          "Whiteboard scenarios: design a sales model; troubleshoot slow report; propose governance for self‑service."
+        ]},
+        {h:"PL‑300 Guide", t:[
+          "Scope: Prepare the data (Power Query), Model the data (relationships/DAX), Visualize/Analyze (reports), Deploy/Maintain (Service).",
+          "Study plan: official docs + practice tests + capstone review; build a GitHub/LinkedIn portfolio of dashboards."
+        ]},
+        {h:"Final Checklist", t:[
+          "Reusable DAX measures library; theme JSON; data quality SOP; RLS test matrix; performance checklist.",
+          "Create a short video walkthrough (3–5 min) per dashboard for your portfolio."
+        ]}
+      ],
+      tags:["interview","pl300"]
+    }
+  ];
+
+  // ------------------------------
+  // DOM helpers
+  // ------------------------------
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  // Render navigation (left sidebar)
+  function renderNav(list){
+    const nav = $('#nav');
+    nav.innerHTML = '';
+    list.forEach(m => {
+      const btn = document.createElement('button');
+      btn.innerHTML = `<span class="mod-num">${m.id}</span><div><div><strong>${m.title}</strong></div><div class="small muted">${m.objective}</div></div>`;
+      btn.addEventListener('click', () => {
+        document.getElementById('m'+m.id)?.scrollIntoView({behavior:'smooth', block:'start'});
+        $$('.nav button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+      nav.appendChild(btn);
+    });
+  }
+
+  // Render main content
+  function renderContent(list){
+    const content = $('#content');
+    content.innerHTML = '';
+
+    list.forEach(m => {
+      const card = document.createElement('section');
+      card.className = 'card';
+      card.id = 'm'+m.id;
+
+      card.innerHTML = `
+        <h2>${m.id}. ${m.title}</h2>
+        <div class="muted">${m.objective}</div>
+        <div class="kpis" style="margin:8px 0 6px">
+          ${m.tags.map(t=>`<span class="chip">#${t}</span>`).join('')}
+        </div>
+        <div class="body"></div>
+        <div class="footer small"><span>Module ID: ${m.id}</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn smallBtn" data-act="copy" data-id="${m.id}">Copy as Markdown</button>
+            <button class="btn smallBtn" data-act="collapse" data-id="${m.id}">Collapse</button>
+          </div>
+        </div>
+      `;
+
+      const body = card.querySelector('.body');
+      m.sections.forEach(sec => {
+        const d = document.createElement('details');
+        d.className = 'module';
+        d.open = true;
+        const summary = document.createElement('summary');
+        summary.innerHTML = `<span class="chip">Section</span> <strong>${sec.h}</strong>`;
+        d.appendChild(summary);
+
+        if(sec.t){
+          const p = document.createElement('ul');
+          p.className = 'clean';
+          sec.t.forEach(x => {
+            const li = document.createElement('li');
+            li.textContent = x;
+            p.appendChild(li);
+          });
+          d.appendChild(p);
+        }
+        if(sec.list){
+          const ul = document.createElement('ul');
+          ul.className = 'clean';
+          sec.list.forEach(([k,v]) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${k}:</strong> ${v}`;
+            ul.appendChild(li);
+          });
+          d.appendChild(ul);
+        }
+        body.appendChild(d);
+      });
+
+      content.appendChild(card);
+    });
+
+    // Bind local actions
+    $$('.smallBtn').forEach(btn=>{
+      btn.addEventListener('click', (e)=>{
+        const id = +btn.dataset.id;
+        const act = btn.dataset.act;
+        const el = document.getElementById('m'+id);
+        if(act==='collapse'){
+          el.querySelectorAll('details.module').forEach(d=>d.open=false);
+        }
+        if(act==='copy'){
+          const md = moduleToMarkdown(syllabus.find(x=>x.id===id));
+          navigator.clipboard.writeText(md);
+          toast(`Copied Module ${id} as Markdown`);
+        }
+      });
+    });
+  }
+
+  function moduleToMarkdown(m){
+    let out = `# ${m.id}. ${m.title}\n\n**Objective:** ${m.objective}\n\n`;
+    m.sections.forEach(s=>{
+      out += `## ${s.h}\n`;
+      if(s.t){ s.t.forEach(item=> out += `- ${item}\n`); }
+      if(s.list){ s.list.forEach(([k,v])=> out += `- **${k}:** ${v}\n`); }
+      out += `\n`;
+    });
+    return out;
+  }
+
+  // Search & filter
+  function filter(query){
+    query = query.trim().toLowerCase();
+    if(!query){ renderNav(syllabus); renderContent(syllabus); return; }
+    const filtered = syllabus.map(m=>{
+      const hitTitle = m.title.toLowerCase().includes(query) || m.objective.toLowerCase().includes(query) || m.tags.join(' ').toLowerCase().includes(query);
+      const hitSections = m.sections.filter(s=> (s.h && s.h.toLowerCase().includes(query)) || (s.t && s.t.some(x=> x.toLowerCase().includes(query))) || (s.list && s.list.some(([k,v])=> `${k} ${v}`.toLowerCase().includes(query))));
+      if(hitTitle || hitSections.length){
+        return {...m, sections: hitSections.length? hitSections : m.sections};
+      }
+      return null;
+    }).filter(Boolean);
+    renderNav(filtered); renderContent(filtered);
+  }
+
+  // Toast (minimal)
+  function toast(msg){
+    let t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:18px;right:18px;background:#111a28;border:1px solid #243047;padding:10px 14px;border-radius:10px;color:#e8eaed;box-shadow:0 8px 30px rgba(0,0,0,.35);z-index:50';
+    document.body.appendChild(t);
+    setTimeout(()=>t.remove(),1800);
+  }
+
+  // Export JSON
+  function exportJSON(){
+    const blob = new Blob([JSON.stringify(syllabus,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'powerbi-data-analyst-syllabus.json'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Global controls
+  $('#btnExport').addEventListener('click', exportJSON);
+  $('#btnPrint').addEventListener('click', ()=> window.print());
+  $('#btnCollapse').addEventListener('click', ()=> $$('#content details.module').forEach(d=> d.open=false));
+  $('#btnExpand').addEventListener('click', ()=> $$('#content details.module').forEach(d=> d.open=true));
+  $('#q').addEventListener('input', e=> filter(e.target.value));
+
+  // Initial render
+  renderNav(syllabus);
+  renderContent(syllabus);
+  </script>
+</body>
+</html>
